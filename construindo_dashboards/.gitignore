@@ -1,0 +1,38 @@
+# Ambientes virtuais
+venv/
+.env/
+.venv/
+
+# Bytecode do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Arquivos temporários
+*.log
+*.tmp
+*.swp
+*.bak
+*.orig
+*.DS_Store
+Thumbs.db
+
+# Notebooks convertidos ou cache
+.ipynb_checkpoints/
+
+# IDEs e editores
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Arquivos de build e dist
+build/
+dist/
+*.egg-info/
+
+# Dados sensíveis (se você usar dotenv, por exemplo)
+.env
+
+# Plotly/Dash caches (caso use)
+.cache/
