@@ -18,7 +18,10 @@ preds = model.predict(X_test)
 from sklearn.metrics import accuracy_score
 acc = accuracy_score(y_test, preds)
 
-print(f'A acurácia do modelo é {acc:.2%}')
+print(f'Model accuracy is: {acc:.2%}')
 
 import joblib
 joblib.dump(model, 'xgb_model.pkl')
+
+medians = X.median()
+joblib.dump(medians, 'medians.pkl')
