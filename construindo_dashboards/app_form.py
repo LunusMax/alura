@@ -9,10 +9,12 @@ model = joblib.load('xgb_model.pkl')
 medians = joblib.load('medians.pkl')
 
 app = Dash(__name__,
-           external_stylesheets=[dbc.themes.BOOTSTRAP]
+           external_stylesheets=[dbc.themes.FLATLY]
            )
 
 form = dbc.Container([
+    html.H1('Heart Disease Prediction', className='text-center mt-5'),
+    html.P('Please fill in the following information to predict if you have heart disease:', className='text-center mb-5'),
         dbc.Row([
             dbc.Col([
                 dbc.CardGroup([
@@ -154,15 +156,13 @@ form = dbc.Container([
 
                 # botao de previsao
                 dbc.CardGroup([
-                    dbc.Button('Predict', id='submit-button', n_clicks=0, color='primary'),
-                ], className='mb-3'),
+                    dbc.Button('Predict', id='submit-button', n_clicks=0, color='success'),
+                ]),
             ])
         ])
-    ])
-
+    ], fluid=True)
 
 app.layout = html.Div([
-    html.H1('Predict Heart Disease'),
     form,
     html.Div(id='prediction')
 ])
@@ -191,7 +191,7 @@ def predict_heart_disease(n_clicks, age, sex, cp, trestbps, chol, fbs, restecg,
                           thalach, exang, oldpeak, slope, ca, thal):
     if n_clicks == 0:
         return ''
-
+    
     user = pd.DataFrame(
         data = [[age, sex, cp, trestbps, chol, fbs, restecg,
                  thalach, exang, oldpeak, slope, ca, thal]],
@@ -214,8 +214,18 @@ def predict_heart_disease(n_clicks, age, sex, cp, trestbps, chol, fbs, restecg,
 
     prediction = model.predict(user)[0]
     if prediction == 1:
-        return 'The model predicts that you have heart disease.'
+        message = 'The model predicts that you have heart disease.'
+        alert_color = 'danger'
     else:
-        return 'The model predicts that you do not have heart disease.'
+        message = 'The model predicts that you do not have heart disease.'
+        alert_color = 'light'
+    
+     
+    alert = dbc.Alert(
+        message,
+        color=alert_color,
+        className='d-flex justify-content-center mb-5'
+    )
+    return alert
 
 app.run_server(debug=True)
