@@ -1,31 +1,41 @@
-from ucimlrepo import fetch_ucirepo
-import plotly.express as px
 from dash import Dash, dcc, html
+from dash.dependencies import Input, Output
+import dash_bootstrap_components as dbc
+import pages
 
-heart_disease = fetch_ucirepo(id=45)
-data = heart_disease.data.features
-#print(data.head())
+app = Dash(__name__, external_stylesheets=['assets/main.css', dbc.themes.FLATLY])
 
-hist_fig = px.histogram(data, x='age', title='Histograma de Idades')
-hist_div = html.Div([
-        html.H2('Histograma de Idades'),
-        dcc.Graph(figure=hist_fig)
-        ])
+navigation = dbc.NavbarSimple(
+    children=[
+        dbc.NavItem(dbc.NavLink("Graphics", href="/graphs")),
+        dbc.NavItem(dbc.NavLink("Form", href="/form")),
+    ],
+    brand="Dashboard",
+    brand_href="#",
+    color="primary",
+    dark=True,
+)
 
-data['disease'] = (heart_disease.data.targets > 0) * 1
-boxplot_fig = px.box(data, x='disease', y='age', color='disease', title='Boxplot de idades')
-boxplot_div = html.Div([
-        html.H2('Boxplot de Idades'),
-        dcc.Graph(figure=boxplot_fig)
-        ]) 
-
-app = Dash(__name__)
-app.layout = html.Div([  
-    html.H1('Análise de dados do UCI Repository Heart Disease'),
-    hist_div,
-    boxplot_div
+app.layout = html.Div([
+    dcc.Location(id='url', refresh=False),
+    navigation, 
+    html.Div(id='page-content')
 ])
 
-# app.layout.children.append(boxplot_div) ## add dynamically
+
+@app.callback(
+    Output('page-content', 'children'),
+    Input('url', 'pathname')
+)
+
+def render_page(pathname):
+    if pathname == '/graphs':
+        return pages.graphs.layout
+    elif pathname == '/form':
+        from app_form import app as form_app
+        return form_app.layout
+    else:
+        return html.P('Home')
+
 
 app.run_server(debug=True)
