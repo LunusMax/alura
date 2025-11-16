@@ -4,13 +4,10 @@ import dash_bootstrap_components as dbc
 import joblib
 import numpy as np
 import pandas as pd
+from app import app
 
 model = joblib.load('xgb_model.pkl')
 medians = joblib.load('medians.pkl')
-
-app = Dash(__name__,
-           external_stylesheets=[dbc.themes.FLATLY]
-           )
 
 form = dbc.Container([
     html.H1('Heart Disease Prediction', className='text-center mt-5'),
@@ -162,7 +159,7 @@ form = dbc.Container([
         ])
     ], fluid=True)
 
-app.layout = html.Div([
+layout = html.Div([
     form,
     html.Div(id='prediction')
 ])
@@ -227,5 +224,3 @@ def predict_heart_disease(n_clicks, age, sex, cp, trestbps, chol, fbs, restecg,
         className='d-flex justify-content-center mb-5'
     )
     return alert
-
-app.run_server(debug=True)
